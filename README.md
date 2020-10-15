@@ -112,6 +112,28 @@ Besides stand-alone deployment described above, third-party
 project offers REST API managed mass deployment of multiple `snmpsim-command-responder`
 instances.
 
+Running inside the container
+-------------
+To run the snmpsim insde a container, the appropriate port needs to be exposed from the container
+to the localhost
+eg: Inside Dockerfile, we need to add the below line to expose the port udp 1024
+
+Dockerfile:
+---------------
+EXPOSE 1024/udp
+---------------
+
+Similarly, while running the container, the port needs to be binded to the localhost
+
+docker run -u snmpsim -p 1024:1024/udp --name snmp-sim -d snmp-sim:latest
+
+Above 1024:1024/udp allows to execute snmpget commands from the localhost thus redirecting the
+snmp requests to the container.
+Note: The snmpsim command needs to change the IP address of the endpoint to the eth0 interface ip's address
+just so that, the snmpget requests are redirected correctly to the agent running inside the container
+
+snmpsim-command-responder --data-dir=./data --agent-udpv4-endpoint=127.0.0.1:1024
+
 Documentation
 -------------
 
